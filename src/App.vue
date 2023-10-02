@@ -1,23 +1,29 @@
 <script setup>
-  import { computed } from 'vue';
-  import { RouterView, RouterLink } from "vue-router";
+  import { computed } from "vue";
+  import { useRouter, RouterView, RouterLink } from "vue-router";
   import { useAuthStore } from "./stores/auth";
 
+  const router = useRouter();
   const authStore = useAuthStore();
 
   const token = computed(() => authStore.userInfo.token);
 
   const checkUser = () => {
-    const tokens = JSON.parse(localStorage.getItem('userTokens'));
+    const tokens = JSON.parse(localStorage.getItem("userTokens"));
 
-    if(tokens) {
+    if (tokens) {
       authStore.userInfo.token = tokens.token;
       authStore.userInfo.refreshToken = tokens.refreshToken;
-      authStore.userInfo.expiresIn = tokens.expiresIn;
     }
 
-    console.log(authStore.userInfo)
-  }
+    console.log(authStore.userInfo);
+  };
+
+  const logout = () => {
+    authStore.logout();
+    localStorage.removeItem("userTokens");
+    router.push("/signin");
+  };
 
   checkUser();
 </script>
@@ -25,9 +31,27 @@
 <template>
   <div class="menu">
     <router-link to="/">Home</router-link>
-    <router-link v-if="!token" to="/signin">Sign In</router-link>
-    <router-link v-if="!token" to="/signup">Register</router-link>
-    <router-link v-if="token" to="/cars">Cars</router-link>
+    <router-link
+      v-if="!token"
+      to="/signin"
+      >Sign In</router-link
+    >
+    <router-link
+      v-if="!token"
+      to="/signup"
+      >Register</router-link
+    >
+    <router-link
+      v-if="token"
+      to="/cars"
+      >Cars</router-link
+    >
+    <router-link
+      v-if="token"
+      to="/signin"
+      @click.prevent="logout"
+      >Logout</router-link
+    >
   </div>
   <div class="container">
     <RouterView />
@@ -42,9 +66,9 @@
   }
 
   .menu {
-    display: flex; 
+    display: flex;
     gap: 20px;
-    
+
     a {
       text-decoration: none;
       color: #000;
