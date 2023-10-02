@@ -4,12 +4,12 @@
 
 <template>
   <main>
-    vue3 + firebase
-    <Button
-      label="Button"
-      icon="pi pi-check"
-    />
+    <h1>Home page</h1>
   </main>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  h1 {
+    text-align: center;
+  }
+</style>

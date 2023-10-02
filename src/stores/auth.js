@@ -23,7 +23,9 @@ export const useAuthStore = defineStore('auth', () => {
 
     try {
       let response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:${stringUrl}?key=${apiKey}`, { ...payload, returnSecureToken: true });
-      console.log(response.data)
+
+      // console.log(response.data)
+
       userInfo.value = {
         token: response.data.idToken,
         email: response.data.email,
@@ -32,6 +34,12 @@ export const useAuthStore = defineStore('auth', () => {
         expiresIn: response.data.expiresIn,
       }
 
+      localStorage.setItem('userTokens',
+        JSON.stringify({
+          token: userInfo.value.token,
+          refreshToken: userInfo.value.refreshToken,
+          expiresIn: userInfo.value.expiresIn,
+        }))
     } catch (err) {
       console.log(err.response.data.error.message);
       switch (err.response.data.error.message) {
