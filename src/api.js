@@ -24,6 +24,8 @@ axiosApiInstance.interceptors.response.use((response) => {
 }, async function (error) {
   const authStore = useAuthStore();
   const originalRequest = error.config;
+  console.log(error.response.status);
+  console.log(originalRequest);
   if (error.response.status === 401 && !originalRequest._retry) {
     originalRequest._retry = true;
     try {
@@ -31,9 +33,7 @@ axiosApiInstance.interceptors.response.use((response) => {
         `https://securetoken.googleapis.com/v1/token?key=${apiKey}`, {
         grant_type: 'refresh-token',
         refresh_token: JSON.parse(localStorage.getItem('userTokens')).refreshToken
-      }
-      )
-      console.log('newToken', newTokens.data);
+      })
       authStore.userInfo.token = newTokens.data.access_token;
       authStore.userInfo.refreshToken = newTokens.data.refresh_token;
       localStorage.setItem('userTokens', JSON.stringify({
@@ -41,15 +41,15 @@ axiosApiInstance.interceptors.response.use((response) => {
         refreshToken: newTokens.data.refresh_token
       }));
     } catch (err) {
-      console.log(err)
+      console.error(err)
       localStorage.removeItem('userTokens');
       router.push('/signin');
       authStore.userInfo.token = '';
       authStore.userInfo.refreshToken = '';
     }
-    // console.log(originalRequest)
-
+    console.log(originalRequest)
   }
+  
 })
 
 

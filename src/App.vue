@@ -15,8 +15,6 @@
       authStore.userInfo.token = tokens.token;
       authStore.userInfo.refreshToken = tokens.refreshToken;
     }
-
-    console.log(authStore.userInfo);
   };
 
   const logout = () => {
@@ -31,6 +29,7 @@
 <template>
   <div class="menu">
     <router-link to="/">Home</router-link>
+
     <router-link
       v-if="!token"
       to="/signin"
